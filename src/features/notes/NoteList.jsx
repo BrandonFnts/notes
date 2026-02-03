@@ -1,6 +1,6 @@
 import { NoteListItem } from "./NoteListItem";
 
-export const NoteList = ({ data, onClick }) => {
+export const NoteList = ({ data, onClick, onDelete }) => {
     if (!data || data.length === 0) {
         return <div className="text-center p-4 text-gray-500">There are no notes available.</div>;
     }
@@ -10,8 +10,8 @@ export const NoteList = ({ data, onClick }) => {
             <table className="table table-zebra">
                 <thead>
                     <tr>
-                        <th>Título</th>
-                        <th>Contenido</th>
+                        <th>Title</th>
+                        <th>Content</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -19,7 +19,8 @@ export const NoteList = ({ data, onClick }) => {
                         <NoteListItem 
                             key={item.id} 
                             item={item}
-                            onClick={onClick} 
+                            onClick={onClick}
+                            onDelete={onDelete}
                         />
                     ))}
                 </tbody>
