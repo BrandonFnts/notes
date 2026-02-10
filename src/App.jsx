@@ -4,10 +4,16 @@ import { Toaster } from 'react-hot-toast';
 function App() {
   return (
     <>
-      <NoteListView />
-      <Toaster />
+      <ReactiveProvider>
+        <NoteListView />
+        <Toaster />
+      </ReactiveProvider>
     </>
   )
 }
 
 export default App
+
+const ReactiveProvider = ({ children }) => {
+  return <>{children}</>;
+};

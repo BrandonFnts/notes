@@ -1,48 +1,34 @@
-import axios from "axios";
+import { noteClient } from "@/sdk/noteClient";
+import { createService } from "../reactive";
 
-const BASE_URL = "/api";
-const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2OTdmYjEzN2M4YWNkYzdkYzcxZDg0ZWQiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzcwMTQyMTg2LCJleHAiOjE3NzAxNDMwODZ9.PO4QFVQ69uVx8rG9EB-y0p4L4M81YvXpqPFPvgIc_hU";
+const noteServiceDefinition = {
+  onSuccess: ({ action, payload, params, db }) => {
+    
+    switch (action) {
+      case "getNotes":
+        db.collection("notes").bulkWrite(payload);
+        break;
 
-const api = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${TOKEN}`
+      case "createNote": 
+        db.collection("notes").insertOne(payload);
+        break;
+
+      case "updateNote": 
+        db.collection("notes").updateOne(payload.id, payload);
+        break;
+
+      case "deleteNote": 
+        db.collection("notes").deleteOne(params[0]);
+        break;
+        
+      default:
+        break;
     }
-});
-
-export const noteService = {
-    // --- NOTES ---
-    getNotes: async () => {
-        const response = await api.get("/notes");
-        console.log("Fetched notes:", response.data);
-        return response.data;
-    },
-
-    getNoteById: async (id) => {
-        const response = await api.get(`/notes/${id}`);
-        return response.data;
-    },
-
-    createNote: async (note) => {
-        console.log("Creating note with data:", note);
-        const response = await api.post("/notes", note);
-        return response.data;
-    },
-
-    updateNote: async (id, note) => {
-        const response = await api.put(`/notes/${id}`, note);
-        return response.data;
-    },
-
-    deleteNote: async (id) => {
-        const response = await api.delete(`/notes/${id}`);
-        return response.data;
-    },
-
-    // --- TAGS ---
-    getTags: async () => {
-        const response = await api.get("/tags");
-        return response.data;
-    }
+  },
+  
+  onError: (error) => {
+    console.error("NoteService Error:", error);
+  },
 };
+
+export const noteService = createService(noteClient, noteServiceDefinition);
