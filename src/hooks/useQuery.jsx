@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useLocalStorage } from '@uidotdev/usehooks';
 
 
@@ -66,39 +66,49 @@ const checkCondition = (itemValue, op, filterValue) => {
 export const Query = ({ collection, name, defaultValue, where, setData }) => {
   const result = useQuery({ collection, where });
 
-  useEffect(() => {
-    setData((prev) => ({
-      ...prev,
-      [name]: result ?? defaultValue,
-    }));
-  }, []);
-
   useDeepCompareEffect(() => {
     setData((prev) => ({
       ...prev,
       [name]: result ?? defaultValue,
     }));
-  }, [result]);
+  }, [result, name, defaultValue]);
 
-  return <></>;
+  return null;
 };
 
-const isEqual = (a, b) => {
-  return JSON.stringify(a) === JSON.stringify(b);
+const useDeepCompareMemoize = (value) => {
+  const [ref, setRef] = useState(value);
+
+  if (!isDeepEqual(value, ref)) {
+    setRef(value);
+  }
+
+  return ref;
 };
 
-const useDeepCompareEffect = (effect, dependencies) => {
-  const ref = useRef(dependencies);
-  const prevDepsRef = useRef(dependencies);
+const useDeepCompareEffect = (callback, dependencies) => {
+  useEffect(callback, useDeepCompareMemoize(dependencies));
+};
 
-  useEffect(() => {
-    ref.current = dependencies;
-  }, [dependencies]);
+const isDeepEqual = (object1, object2) => {
+  if (object1 === object2) return true;
 
-  useEffect(() => {
-    if (!isEqual(ref.current, prevDepsRef.current)) {
-      prevDepsRef.current = ref.current;
-      return effect();
+  if (typeof object1 !== 'object' || object1 === null || 
+      typeof object2 !== 'object' || object2 === null) {
+    return false;
+  }
+
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  for (const key of keys1) {
+    if (!Object.prototype.hasOwnProperty.call(object2, key) || 
+        !isDeepEqual(object1[key], object2[key])) {
+      return false;
     }
-  }, [dependencies]);
+  }
+
+  return true;
 };

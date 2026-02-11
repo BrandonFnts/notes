@@ -46,7 +46,7 @@ export const NoteListController = withReactive(
           <div className="card bg-base-100 shadow-xl h-fit lg:col-span-3">
             <div className="card-body p-4">
               <NotesLoader
-                onClick={services.notes.getNotes}
+                onRefresh={services.notes.getNotes}
                 isLoading={isLoading}
               >
                 {({ notes }) => (
