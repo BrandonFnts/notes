@@ -1,7 +1,8 @@
 import { noteClient } from "@/sdk/noteClient";
 import { createService } from "../reactive";
+import { notifyService } from "./notifyService";
 
-const noteServiceDefinition = {
+const noteReactor = {
   onSuccess: ({ action, payload, params, db }) => {
     
     switch (action) {
@@ -11,24 +12,41 @@ const noteServiceDefinition = {
 
       case "createNote": 
         db.collection("notes").insertOne(payload);
+        notifyService.success("Note created successfully.");
         break;
 
       case "updateNote": 
         db.collection("notes").updateOne(payload.id, payload);
+        notifyService.success("Note updated successfully.");
         break;
 
       case "deleteNote": 
         db.collection("notes").deleteOne(params[0]);
-        break;
-        
-      default:
+        notifyService.success("Note deleted successfully.");
         break;
     }
   },
-  
-  onError: (error) => {
-    console.error("NoteService Error:", error);
+  onError: ({ action }) => {
+
+    let mensaje = "Something went wrong. Please try again.";
+
+    switch (action) {
+        case "getNotes":
+            mensaje = "Failed to load notes. Please check your connection.";
+            break;
+        case "createNote":
+            mensaje = "Error saving note. Please try again.";
+            break;
+        case "updateNote":
+            mensaje = "Error updating note. Please try again.";
+            break;
+        case "deleteNote":
+            mensaje = "Error deleting note. Please try again.";
+            break;
+    }
+
+    notifyService.error(mensaje);
   },
 };
 
-export const noteService = createService(noteClient, noteServiceDefinition);
+export const noteService = createService(noteClient, noteReactor);

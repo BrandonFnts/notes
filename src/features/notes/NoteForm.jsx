@@ -77,7 +77,6 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, error, initialData }) =>
                 </div>
             </div>
 
-            {/* Tags (Igual que antes) */}
             <div className="form-control">
                 <label className="label"><span className="label-text font-semibold">Tags</span></label>
                 {tagsLoading ? <span className="loading loading-dots loading-xs"></span> : (

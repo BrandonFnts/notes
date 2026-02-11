@@ -3,17 +3,17 @@ import { NoteList } from "./NoteList";
 import { NoteForm } from "./NoteForm";
 import { NotesLoader } from "./NotesLoader";
 import { withReactive } from "@/reactive";
-import { notifyService } from "@/services/notifyService";
 
 export const NoteListController = withReactive(
-  ({ data, services, monitors, onClick }) => {
+  ({ data, services, monitors }) => {
     const [editingNote, setEditingNote] = useState(null);
-    const isLoading = false;
-    /*  monitors.notes.getNotes || 
-        monitors.tags.getTags ||
-        monitors.notes.createNote ||
-        monitors.notes.updateNote ||
-        monitors.notes.deleteNote; */
+
+    const isLoading =
+      monitors.getNotes ||
+      monitors.getTags ||
+      monitors.createNote ||
+      monitors.updateNote ||
+      monitors.deleteNote;
 
     const handleSelectNote = (note) => {
       setEditingNote(note);
@@ -24,32 +24,21 @@ export const NoteListController = withReactive(
       setEditingNote(null);
     };
 
-    const handleDeleteNote = async (id, e) => {
+    const handleDeleteNote = (id, e) => {
       e.stopPropagation();
       if (confirm("Are you sure you want to delete this note?")) {
-        try {
-            await services.notes.deleteNote(id);
-            notifyService.success("Note deleted.");
-            if (editingNote?.id === id) setEditingNote(null);
-        } catch (error) {
-            notifyService.error("Error deleting note");
-        }
+          services.notes.deleteNote(id);
+          if (editingNote?.id === id) setEditingNote(null);
       }
     };
 
-    const handleFormSubmit = async (formData) => {
-        try {
-            if (editingNote) {
-                await services.notes.updateNote(editingNote.id, formData);
-                notifyService.success('Note updated.');
-                setEditingNote(null);
-            } else {
-                await services.notes.createNote(formData);
-                notifyService.success('Note created.');
-            }
-        } catch (error) {
-            notifyService.error('Error saving note.');
-        }
+    const handleFormSubmit = (formData) => {
+      if (editingNote) {
+        services.notes.updateNote(editingNote.id, formData)
+            .then(() => setEditingNote(null));
+      } else {
+        services.notes.createNote(formData);
+      }
     };
 
     return (
@@ -57,20 +46,18 @@ export const NoteListController = withReactive(
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="card bg-base-100 shadow-xl h-fit lg:col-span-3">
             <div className="card-body p-4">
-              <NotesLoader 
-                onClick={services.notes.getNotes} 
+              <NotesLoader
+                onClick={services.notes.getNotes}
                 isLoading={isLoading}
               >
-                {({ notes }) => {
-                  return (
+                {({ notes }) => (
                     <NoteList
                       data={notes}
                       isLoading={isLoading}
                       onClick={handleSelectNote}
                       onDelete={handleDeleteNote}
                     />
-                  );
-                }}
+                )}
               </NotesLoader>
             </div>
           </div>
@@ -93,7 +80,7 @@ export const NoteListController = withReactive(
 
               <NoteForm
                 tags={data.tags || []}
-                tagsLoading={isLoading}
+                tagsLoading={monitors.getTags}
                 onSubmit={handleFormSubmit}
                 initialData={editingNote}
               />
@@ -120,11 +107,12 @@ export const NoteListController = withReactive(
         defaultValue: [],
       },
     ],
-    // monitors: ({ services }) => [
-    //   services.notes.getNotes,
-    //   services.notes.createNote,
-    //   services.notes.updateNote,
-    //   services.tags.getTags
-    // ]
+    monitors: () => [
+      "getNotes",
+      "createNote",
+      "updateNote",
+      "deleteNote",
+      "getTags",
+    ],
   }
 );

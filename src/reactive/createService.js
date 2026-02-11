@@ -34,12 +34,22 @@ const db = {
 
 function createAction(client, action, service) {
   return (...params) => {
-    return client[action](...params).then((result) => {
-      if (service.onSuccess) {
+    window.dispatchEvent(
+      new CustomEvent(`lf:${action}:start`, { detail: { action } }),
+    );
+    return client[action](...params)
+      .then((result) => {
         service.onSuccess({ action, payload: result, params, db });
-      }
-      return result;
-    });
+        window.dispatchEvent(
+          new CustomEvent(`lf:${action}:success`, { detail: { action } }),
+        );
+      })
+      .catch((error) => {
+        service.onError({ action, error, params, db });
+        window.dispatchEvent(
+          new CustomEvent(`lf:${action}:error`, { detail: { action } }),
+        );
+      });
   };
 }
 
