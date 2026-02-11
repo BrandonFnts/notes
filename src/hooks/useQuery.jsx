@@ -76,6 +76,8 @@ export const Query = ({ collection, name, defaultValue, where, setData }) => {
   return null;
 };
 
+// This code was made with the help of GEMINI, It solves the problem of use json.stringify in useEffect dependencies,
+// it is a deep compare that returns true if the objects are equal, and false if they are not. It also memoizes the value to avoid unnecessary re-renders
 const useDeepCompareMemoize = (value) => {
   const [ref, setRef] = useState(value);
 
