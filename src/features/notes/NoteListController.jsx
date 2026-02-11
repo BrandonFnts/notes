@@ -17,7 +17,6 @@ export const NoteListController = withReactive(
 
     const handleSelectNote = (note) => {
       setEditingNote(note);
-      window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleCancelEdit = () => {
