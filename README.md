@@ -1,124 +1,55 @@
-# Configuración Manual de Autenticación (Modo Desarrollo)
+# My Notes App
 
-Debido a que el proyecto se encuentra en una etapa donde la Interfaz de Usuario (UI) para Iniciar Sesión aún no está implementada, es necesario configurar los tokens de acceso manualmente en el navegador para poder consumir la API y visualizar las notas, tambien se debe de tomar en cuenta que la api esta hosteada en la version gratuita de Render por lo que la primera peticion tardara en realizarse.
+Una aplicación moderna y reactiva para la gestión de notas personales. Construida con **React**, **Vite** y una arquitectura personalizada basada en Servicios y Reactores para un manejo de estado y efectos secundarios totalmente desacoplado.
 
-> ⚠️ Este proceso solo se debe realizar la primera vez que ejecutes el proyecto o cuando tus tokens hayan expirado y el mecanismo de refresh falle.
+## Funcionalidades Principales
 
----
+### Autenticación Robusta
+- **Login y Registro:** Integración con API mediante JWT (Access Token + Refresh Token).
+- **Manejo de Sesión:** Renovación automática de tokens (Silent Refresh) mediante interceptores de Axios.
+- **Rutas Protegidas:** Sistema de `ProtectedRoute` que impide el acceso a usuarios no autenticados.
+- **Navegación por Eventos:** Redirección automática basada en eventos del sistema (`app:navigate`).
 
-# Pasos para Obtener y Configurar Tokens
+### Gestión de Notas (CRUD)
+- **Crear y Editar:** Formulario dinámico para gestionar el contenido de tus notas.
+- **Organización Visual:**
+  - Asignación de **Colores** personalizados a cada nota.
+  - Sistema de **Etiquetas (Tags)** para categorización.
+- **Listado Inteligente:** Búsqueda en tiempo real y ordenamiento (por fecha o título).
+- **Eliminación Segura:** Confirmación antes de borrar elementos.
 
-## 1️ Obtener Credenciales desde la API (Postman)
+## Arquitectura del Proyecto
 
-Necesitas crear un usuario y obtener sus tokens usando una herramienta como **Postman, Insomnia o cURL**.
+Esta aplicación utiliza un patrón de diseño avanzado para separar responsabilidades:
 
-**Base URL:**
+1. **Vistas (Views/Forms):** Componentes visuales "tontos" que solo reciben props y emiten eventos. No tienen lógica de negocio.
+2. **Controladores (Controllers):** Componentes de orden superior (`withReactive`) que conectan la vista con los servicios. Manejan el estado efímero de la UI.
+3. **Servicios (Services):** Módulos de lógica pura (JS) que comunican con la API.
+4. **Reactores (Reactors):** Escuchan el resultado de los servicios y ejecutan efectos secundarios:
+   - Mostrar notificaciones (Toasts).
+   - Actualizar el almacenamiento local.
+   - Disparar eventos de navegación.
 
-```
-https://notes-api-6bx3.onrender.com
-```
+## Stack Tecnológico
 
----
+- **Core:** React 18 + Vite
+- **Estilos:** TailwindCSS + DaisyUI
+- **Enrutamiento:** React Router DOM v6
+- **Peticiones HTTP:** Axios (Instancia personalizada con Interceptors)
+- **Estado Global:** React Context (Auth) + Custom Reactive System
+- **Notificaciones:** React Hot Toast
 
-### A. Registrar un Usuario (Si no tienes uno)
+## Instalación y Ejecución
 
-- **Método:** `POST`  
-- **Endpoint:** `/auth/register`
+1. **Clonar el repositorio:**
+   ```bash
+   git clone <url-del-repositorio>
+   cd my-notes-app
 
-**Body (JSON):**
+2. **Instalar dependencias:**
+   ```bash
+   npm install
 
-```json
-{
-  "email": "tu_email@ejemplo.com",
-  "password": "Password123"
-}
-```
-
----
-
-### B. Iniciar Sesión (Obtener Tokens)
-
-- **Método:** `POST`  
-- **Endpoint:** `/auth/login`
-
-**Body (JSON):**
-
-```json
-{
-  "email": "tu_email@ejemplo.com",
-  "password": "Password123"
-}
-```
-
-### Respuesta Exitosa
-
-Copia los valores de `accessToken` y `refreshToken` que recibirás en la respuesta:
-
-```json
-{
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR...",
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR..."
-}
-```
-
----
-
-## 2️ Inyectar Tokens en el Navegador
-
-Una vez que tienes los tokens copiados, debes guardarlos en el **Local Storage** de tu navegador donde corre la aplicación (ejemplo: `http://localhost:5173`).
-
----
-
-### Método A: Vía Consola (Rápido)
-
-1. Abre tu proyecto en el navegador.
-2. Presiona `F12` o **Click Derecho → Inspeccionar** para abrir las DevTools.
-3. Ve a la pestaña **Console**.
-4. Pega los siguientes comandos (reemplazando con tus tokens reales) y presiona Enter:
-
-```javascript
-localStorage.setItem("accessToken", "PEGA_AQUI_TU_ACCESS_TOKEN");
-localStorage.setItem("refreshToken", "PEGA_AQUI_TU_REFRESH_TOKEN");
-```
-
----
-
-### Método B: Vía Interfaz Gráfica (Application)
-
-1. Abre las DevTools (`F12`).
-2. Ve a la pestaña **Application** (Chrome/Edge) o **Storage** (Firefox).
-3. En el menú lateral izquierdo, despliega **Local Storage** y selecciona tu URL (ej: `http://localhost:5173`).
-4. Haz doble click en la columna vacía de **Key** y escribe:
-
-   - `accessToken`
-   - En **Value** pega tu token.
-
-5. Repite el proceso para:
-
-   - `refreshToken`
-
----
-
-## Verificar
-
-1. Recarga la página (`F5`).
-2. La aplicación ahora debería cargar la lista de notas automáticamente.
-
-Si ves las notas, ¡la configuración fue exitosa!
-
----
-
-# Notas Adicionales
-
-### Persistencia
-
-El sistema ya cuenta con lógica para usar el `refreshToken` automáticamente cuando el `accessToken` expire. No deberías tener que repetir este proceso frecuentemente.
-
-### Error 401
-
-Si en la consola ves errores constantes `401 Unauthorized`, significa que el **Refresh Token también expiró**.
-
-En ese caso deberás repetir:
-
-- Paso 1 (Login)
-- Paso 2 (Actualizar tokens en Local Storage)
+3. **Correr el proyecto en desarrollo:**
+   ```bash
+   npm run dev
