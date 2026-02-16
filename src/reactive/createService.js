@@ -5,7 +5,7 @@ const db = {
         localStorage.setItem(collectionName, JSON.stringify(data));
         window.dispatchEvent(new Event("storage"));
       },
-      
+
       insertOne: (data) => {
         const existingData = JSON.parse(localStorage.getItem(collectionName) || "[]");
         localStorage.setItem(collectionName, JSON.stringify([...existingData, data]));
@@ -14,8 +14,8 @@ const db = {
 
       updateOne: (id, newData) => {
         const existingData = JSON.parse(localStorage.getItem(collectionName) || "[]");
-        const updatedData = existingData.map(item => 
-            item.id === id ? { ...item, ...newData } : item
+        const updatedData = existingData.map(item =>
+          item.id === id ? { ...item, ...newData } : item
         );
         localStorage.setItem(collectionName, JSON.stringify(updatedData));
         window.dispatchEvent(new Event("storage"));
@@ -31,7 +31,6 @@ const db = {
   },
 };
 
-
 function createAction(client, action, service) {
   return (...params) => {
     window.dispatchEvent(
@@ -43,12 +42,14 @@ function createAction(client, action, service) {
         window.dispatchEvent(
           new CustomEvent(`lf:${action}:success`, { detail: { action } }),
         );
+        return result;
       })
       .catch((error) => {
         service.onError({ action, error, params, db });
         window.dispatchEvent(
           new CustomEvent(`lf:${action}:error`, { detail: { action } }),
         );
+        throw error;
       });
   };
 }
@@ -56,7 +57,7 @@ function createAction(client, action, service) {
 export function createService(client, serviceDefinition) {
   let result = {
     onSuccess: serviceDefinition.onSuccess,
-    collection: serviceDefinition.collection 
+    collection: serviceDefinition.collection
   };
 
   Object.keys(client).forEach((key) => {

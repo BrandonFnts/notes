@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { LoadingButton } from "@/components";
+import { LoadingButton, Input, TextArea, ColorPicker, ChipSelector, GhostRedButton } from "@/components";
 
-export const NoteForm = ({ tags, tagsLoading, onSubmit, error, initialData }) => {
+export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, onCancel }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [selectedTags, setSelectedTags] = useState([]);
     const [selectedColor, setSelectedColor] = useState("#FFFFE0");
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (initialData) {
@@ -30,20 +29,22 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, error, initialData }) =>
         { name: "Rosa", value: "#FFB6C1", hex: "#FFB6C1" },
     ];
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (!title.trim() || !content.trim()) return;
 
-        setIsSubmitting(true);
-        
-        await onSubmit({ 
-            title, 
-            content, 
+        onSubmit({
+            title,
+            content,
             tagIds: selectedTags,
-            color: selectedColor 
+            color: selectedColor
         });
 
-        setIsSubmitting(false);
+        if (!initialData) {
+            setTitle("");
+            setContent("");
+            setSelectedTags([]);
+        }
     };
 
     const toggleTag = (tagId) => {
@@ -54,50 +55,62 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, error, initialData }) =>
         }
     };
 
+    const handleCancel = (e) => {
+        e.preventDefault();
+        localStorage.setItem("activeNote", JSON.stringify(null));
+        onCancel?.();
+    }
+
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="form-control">
-                <label className="label"><span className="label-text font-semibold">Title</span></label>
-                <input type="text" className="input input-bordered w-full" value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-
-            <div className="form-control">
-                <label className="label"><span className="label-text font-semibold">Content</span></label>
-                <textarea className="textarea textarea-bordered h-24" value={content} onChange={(e) => setContent(e.target.value)}></textarea>
-            </div>
-
-            <div className="form-control">
-                <label className="label"><span className="label-text font-semibold">Color</span></label>
-                <div className="flex gap-3">
-                    {colorOptions.map((opt) => (
-                        <div key={opt.value} onClick={() => setSelectedColor(opt.value)} 
-                             className={`w-8 h-8 rounded-full cursor-pointer border border-base-300 ${selectedColor === opt.value ? 'ring-2 ring-primary scale-110' : ''}`} 
-                             style={{ backgroundColor: opt.hex }} title={opt.name} />
-                    ))}
-                </div>
-            </div>
-
-            <div className="form-control">
-                <label className="label"><span className="label-text font-semibold">Tags</span></label>
-                {tagsLoading ? <span className="loading loading-dots loading-xs"></span> : (
-                    <div className="flex flex-wrap gap-2">
-                        {tags.map(tag => (
-                            <div key={tag.id} onClick={() => toggleTag(tag.id)} className={`badge cursor-pointer p-3 select-none ${selectedTags.includes(tag.id) ? 'badge-primary font-bold' : 'badge-outline opacity-70'}`}>
-                                {tag.name}
-                            </div>
-                        ))}
-                    </div>
+            <div className="flex justify-between items-center">
+                <h3 className="text-sm font-semibold opacity-70">
+                    {initialData ? `Editing: ${initialData.title}` : "New Note"}
+                </h3>
+                {initialData && onCancel && (
+                    <GhostRedButton onClick={handleCancel}>
+                        Cancel
+                    </GhostRedButton>
                 )}
             </div>
 
-            {error && <div className="alert alert-error text-sm py-2 rounded-lg"><span>{error.message || "Error"}</span></div>}
+            <Input
+                label="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter note title..."
+                className="w-full"
+            />
 
-            <div className="mt-2">
-                <LoadingButton 
-                    label={initialData ? "Update Note" : "Create Note"} 
-                    isLoading={isSubmitting} 
+            <TextArea
+                label="Content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Write your note here..."
+                rows={4}
+            />
+
+            <ColorPicker
+                label="Color"
+                options={colorOptions}
+                value={selectedColor}
+                onChange={setSelectedColor}
+            />
+
+            <ChipSelector
+                label="Tags"
+                items={tags}
+                selectedItems={selectedTags}
+                onToggle={toggleTag}
+                isLoading={tagsLoading}
+            />
+
+            <div className="mt-2 text-right">
+                <LoadingButton
+                    label={initialData ? "Update Note" : "Create Note"}
+                    isLoading={isLoading}
                     type="submit"
-                    className={`w-full ${initialData ? "btn-warning" : "btn-primary"}`}
+                    className={`max-w-xs ${initialData ? "btn-warning" : "btn-primary"}`}
                 />
             </div>
         </form>

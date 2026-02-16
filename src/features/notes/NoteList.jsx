@@ -13,6 +13,7 @@ export const NoteList = ({ data, onClick, onDelete }) => {
                         <th>Title</th>
                         <th>Content</th>
                         <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>

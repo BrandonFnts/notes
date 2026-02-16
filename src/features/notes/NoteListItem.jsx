@@ -1,5 +1,7 @@
+import { GhostRedButton } from "@/components";
+
 export const NoteListItem = ({ item, onClick, onDelete }) => {
-    
+
     const bgColor = item.color || "#CCCCCC";
 
     return (
@@ -14,14 +16,14 @@ export const NoteListItem = ({ item, onClick, onDelete }) => {
                     <div>
                         <div className="font-bold">{item.title}</div>
                         <div className="flex gap-1 mt-1">
-                             {item.tags && item.tags.length > 0 ? (
+                            {item.tags && item.tags.length > 0 ? (
                                 item.tags.map(t => <span key={t.id} className="badge badge-xs badge-ghost">{t.name}</span>)
-                             ) : <span className="text-xs opacity-50">ID: {item.id}</span>}
+                            ) : <span className="text-xs opacity-50">ID: {item.id}</span>}
                         </div>
                     </div>
                 </div>
             </td>
-            
+
             <td>
                 <div className="max-w-md truncate opacity-70">
                     {item.content}
@@ -35,13 +37,9 @@ export const NoteListItem = ({ item, onClick, onDelete }) => {
             </td>
 
             <td className="text-right">
-                <button 
-                    onClick={(e) => onDelete(item.id, e)}
-                    className="btn btn-ghost btn-xs text-error opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Eliminar"
-                >
+                <GhostRedButton onClick={(e) => onDelete(item.id, e)}>
                     Delete
-                </button>
+                </GhostRedButton>
             </td>
         </tr>
     );

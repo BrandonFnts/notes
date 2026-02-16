@@ -1,14 +1,16 @@
-import { NoteListView } from './features/notes';
+import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from '@/context/AuthContext';
+import { router } from './router';
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <ReactiveProvider>
-        <NoteListView />
+        <RouterProvider router={router} />
         <Toaster />
       </ReactiveProvider>
-    </>
+    </AuthProvider>
   )
 }
 
