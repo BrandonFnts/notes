@@ -7,6 +7,8 @@ export const NoteFormController = withReactive(
         const isSaving = monitors.createNote || monitors.updateNote;
 
         useEffect(() => {
+            localStorage.removeItem("activeNote");
+            window.dispatchEvent(new Event("storage"));
             if (noteId) {
                 services.notes.getNoteById(noteId);
             }

@@ -1,37 +1,34 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { axiosInstance } from '@/sdk/core/axiosInstance';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { tokenHelper } from '@/helpers/tokenHelper';
+import { navigate } from '@/helpers/navigate';
 
 const AuthContext = createContext(null);
+
+let _notifyAuthChange = () => { };
+
+export const notifyAuthChange = () => _notifyAuthChange();
 
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const checkAuth = () => {
+    const checkAuth = useCallback(() => {
         const token = tokenHelper.getAccessToken();
-        if (token) {
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            setIsAuthenticated(true);
-        } else {
-            delete axiosInstance.defaults.headers.common['Authorization'];
-            setIsAuthenticated(false);
-        }
+        setIsAuthenticated(!!token);
         setIsLoading(false);
-    };
+    }, []);
 
     useEffect(() => {
         checkAuth();
-        window.addEventListener('auth:change', checkAuth);
+        _notifyAuthChange = checkAuth;
 
-        return () => window.removeEventListener('auth:change', checkAuth);
-    }, []);
+        return () => { _notifyAuthChange = () => { }; };
+    }, [checkAuth]);
 
     const logout = () => {
         tokenHelper.clearTokens();
-        localStorage.clear();
-        window.dispatchEvent(new Event("auth:change"));
-        window.dispatchEvent(new CustomEvent("app:navigate", { detail: "/auth/login" }));
+        setIsAuthenticated(false);
+        navigate("/auth/login");
     };
 
     return (

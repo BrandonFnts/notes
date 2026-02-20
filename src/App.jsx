@@ -6,16 +6,10 @@ import { router } from './router';
 function App() {
   return (
     <AuthProvider>
-      <ReactiveProvider>
-        <RouterProvider router={router} />
-        <Toaster />
-      </ReactiveProvider>
+      <RouterProvider router={router} />
+      <Toaster />
     </AuthProvider>
   )
 }
 
 export default App
-
-const ReactiveProvider = ({ children }) => {
-  return <>{children}</>;
-};

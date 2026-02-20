@@ -1,5 +1,5 @@
 import { tagClient } from "@/sdk/tagClient";
-import { createService } from "../reactive";
+import { createService } from "@/reactive";
 import { notifyService } from "./notifyService";
 
 const tagReactor = {
@@ -12,15 +12,15 @@ const tagReactor = {
     }
   },
   onError: ({ action }) => {
-    let mensaje = "Something went wrong. Please try again.";
+    let message = "Something went wrong. Please try again.";
 
     switch (action) {
       case "getTags":
-        mensaje = "Failed to load tags. Please check your connection.";
+        message = "Failed to load tags. Please check your connection.";
         break;
     }
 
-    notifyService.error(mensaje);
+    notifyService.error(message);
   },
 };
 

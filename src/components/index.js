@@ -10,4 +10,3 @@ export * from './auth/ProtectedRoute';
 export * from './layout/Layout';
 export * from './layout/Navbar';
 export * from './layout/Root';
-export * from './layout/NavigationHandler';

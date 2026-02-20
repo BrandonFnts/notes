@@ -9,7 +9,7 @@ export const NoteListView = () => {
                     <li>Notes</li>
                 </ul>
             </div>
-            <NoteListController onClick={(note) => console.log(note)} />
+            <NoteListController />
         </div>
     );
 }

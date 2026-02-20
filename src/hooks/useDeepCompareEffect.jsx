@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { isDeepEqual } from "@/helpers/compareHelper";
 
 const useDeepCompareMemoize = (value) => {
-    const [ref, setRef] = useState(value);
+    const ref = useRef(value);
 
-    if (!isDeepEqual(value, ref)) {
-        setRef(value);
+    if (!isDeepEqual(value, ref.current)) {
+        ref.current = value;
     }
 
-    return ref;
+    return ref.current;
 };
-
-
 
 export const useDeepCompareEffect = (callback, dependencies) => {
     useEffect(callback, useDeepCompareMemoize(dependencies));

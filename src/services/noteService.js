@@ -33,27 +33,27 @@ const noteReactor = {
   },
   onError: ({ action }) => {
 
-    let mensaje = "Something went wrong. Please try again.";
+    let message = "Something went wrong. Please try again.";
 
     switch (action) {
       case "getNotes":
-        mensaje = "Failed to load notes. Please check your connection.";
+        message = "Failed to load notes. Please check your connection.";
         break;
       case "getNoteById":
-        mensaje = "Failed to load note details.";
+        message = "Failed to load note details.";
         break;
       case "createNote":
-        mensaje = "Error saving note. Please try again.";
+        message = "Error saving note. Please try again.";
         break;
       case "updateNote":
-        mensaje = "Error updating note. Please try again.";
+        message = "Error updating note. Please try again.";
         break;
       case "deleteNote":
-        mensaje = "Error deleting note. Please try again.";
+        message = "Error deleting note. Please try again.";
         break;
     }
 
-    notifyService.error(mensaje);
+    notifyService.error(message);
   },
 };
 

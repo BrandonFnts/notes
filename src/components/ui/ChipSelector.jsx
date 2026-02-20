@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const ChipSelector = ({ label, items, selectedItems, onToggle, isLoading, className = "" }) => {
     return (
         <div className={`form-control ${className}`}>

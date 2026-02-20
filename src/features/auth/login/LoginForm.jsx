@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, LoadingButton } from '@/components';
 
@@ -16,19 +16,19 @@ export const LoginForm = ({ onSubmit, isLoading, errors }) => {
             <div className="card-body">
                 <h2 className="card-title justify-center mb-4">Login</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input 
-                        label="Email" 
-                        type="email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                        required 
+                    <Input
+                        label="Email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                     />
-                    <Input 
-                        label="Password" 
-                        type="password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        required 
+                    <Input
+                        label="Password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
 
                     <div className="form-control mt-6">

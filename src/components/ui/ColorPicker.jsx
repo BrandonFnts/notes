@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const ColorPicker = ({ label, options, value, onChange, className = "" }) => {
     return (
         <div className={`form-control ${className}`}>

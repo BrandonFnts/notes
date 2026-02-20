@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const TextArea = ({ label, value, onChange, placeholder, rows = 3, error, className = "" }) => {
     return (
         <div className={`form-control ${className}`}>

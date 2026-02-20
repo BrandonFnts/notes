@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { LoadingButton, Input, TextArea, ColorPicker, ChipSelector, GhostRedButton } from "@/components";
 
+const colorOptions = [
+    { name: "Amarillo", value: "#FFFFE0", hex: "#FFFFE0" },
+    { name: "Verde", value: "#90EE90", hex: "#90EE90" },
+    { name: "Azul", value: "#ADD8E6", hex: "#ADD8E6" },
+    { name: "Rosa", value: "#FFB6C1", hex: "#FFB6C1" },
+];
+
 export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, onCancel }) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -22,12 +29,6 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, 
         }
     }, [initialData]);
 
-    const colorOptions = [
-        { name: "Amarillo", value: "#FFFFE0", hex: "#FFFFE0" },
-        { name: "Verde", value: "#90EE90", hex: "#90EE90" },
-        { name: "Azul", value: "#ADD8E6", hex: "#ADD8E6" },
-        { name: "Rosa", value: "#FFB6C1", hex: "#FFB6C1" },
-    ];
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -57,7 +58,6 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, 
 
     const handleCancel = (e) => {
         e.preventDefault();
-        localStorage.setItem("activeNote", JSON.stringify(null));
         onCancel?.();
     }
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const Input = ({ label, value, onChange, placeholder, type = "text", error, className = "" }) => {
     return (
         <div className={`form-control ${className}`}>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Query } from "@/hooks";
-import services from "@/services";
+import { services } from "@/services";
 
 const buildMonitors = (monitors) => {
   return monitors.reduce((acc, monitor) => {

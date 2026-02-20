@@ -48,7 +48,7 @@ export const responseErrorInterceptor = async (error) => {
 
         if (!refreshToken) throw new Error("No refresh token");
 
-        const response = await authClient.refreshToken(refreshToken);
+        const response = await authClient.refresh(refreshToken);
         const { accessToken, refreshToken: newRefreshToken } = response.data || response;
 
         tokenHelper.setTokens(accessToken, newRefreshToken);

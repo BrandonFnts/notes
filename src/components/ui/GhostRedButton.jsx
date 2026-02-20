@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const GhostRedButton = ({ onClick, children, className = "", type = "button" }) => {
     return (
         <button
