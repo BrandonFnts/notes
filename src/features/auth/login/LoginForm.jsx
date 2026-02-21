@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Input, LoadingButton } from '@/components';
 
-export const LoginForm = ({ onSubmit, isLoading, errors }) => {
+export const LoginForm = ({ onSubmit, isLoading }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 

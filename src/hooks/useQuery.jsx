@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useLocalStorage } from '@uidotdev/usehooks';
-import { useDeepCompareEffect } from './useDeepCompareEffect';
 import { checkCondition } from '@/helpers/filterHelper';
 
 export const useQuery = ({ collection, where = [], orderBy = null }) => {
@@ -43,19 +42,4 @@ export const useQuery = ({ collection, where = [], orderBy = null }) => {
   }, [table, where, orderBy]);
 
   return result;
-};
-
-
-
-export const Query = ({ collection, name, defaultValue, where, setData }) => {
-  const result = useQuery({ collection, where });
-
-  useDeepCompareEffect(() => {
-    setData((prev) => ({
-      ...prev,
-      [name]: result ?? defaultValue,
-    }));
-  }, [result, name, defaultValue]);
-
-  return null;
 };
