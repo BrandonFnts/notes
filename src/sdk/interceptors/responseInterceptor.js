@@ -63,7 +63,7 @@ export const responseErrorInterceptor = async (error) => {
 
     } catch (refreshError) {
         processQueue(refreshError, null);
-        localStorage.clear();
+        tokenHelper.clearTokens();
         return Promise.reject(refreshError);
     } finally {
         isRefreshing = false;
