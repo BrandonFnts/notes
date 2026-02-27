@@ -1,4 +1,3 @@
-import { Typography } from "antd";
 import { CrudTable } from "@/components";
 
 const columns = [
