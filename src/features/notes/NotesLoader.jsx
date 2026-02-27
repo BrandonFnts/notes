@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Input, Select, Button, Typography, Space } from "antd";
+import { ReloadOutlined, SortAscendingOutlined, SortDescendingOutlined } from "@ant-design/icons";
 import { LoadingButton } from "@/components";
 import { useQuery } from "@/hooks/useQuery";
 
@@ -7,7 +9,7 @@ export const NotesLoader = ({ isLoading, onRefresh, children }) => {
     const [sortField, setSortField] = useState("createdAt");
     const [sortDir, setSortDir] = useState("desc");
     const filters = [];
-    
+
     if (search) {
         filters.push({ field: 'title', op: 'contains', value: search });
     }
@@ -15,7 +17,7 @@ export const NotesLoader = ({ isLoading, onRefresh, children }) => {
     const filteredNotes = useQuery({
         collection: 'notes',
         where: filters,
-        orderBy: { field: sortField, dir: sortDir } 
+        orderBy: { field: sortField, dir: sortDir }
     });
 
     const toggleSortDir = () => {
@@ -25,41 +27,42 @@ export const NotesLoader = ({ isLoading, onRefresh, children }) => {
     return (
         <div>
             <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
-                <div className="text-2xl font-bold">My Notes</div>
-                <div className="flex flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto items-center">
-                    
-                    <input 
-                        type="text" 
-                        placeholder="Search title..." 
-                        className="input input-bordered input-sm w-full sm:w-40" 
+                <Typography.Title level={4} style={{ margin: 0 }}>My Notes</Typography.Title>
+                <Space wrap>
+                    <Input
+                        placeholder="Search title..."
+                        size="small"
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)} 
+                        onChange={(e) => setSearch(e.target.value)}
+                        style={{ width: 160 }}
+                        allowClear
                     />
 
-                    <select 
-                        className="select select-bordered select-sm w-full sm:w-auto"
+                    <Select
+                        size="small"
                         value={sortField}
-                        onChange={(e) => setSortField(e.target.value)}
-                    >
-                        <option value="createdAt">Date</option>
-                        <option value="title">Title</option>
-                    </select>
+                        onChange={(value) => setSortField(value)}
+                        style={{ width: 100 }}
+                        options={[
+                            { value: 'createdAt', label: 'Date' },
+                            { value: 'title', label: 'Title' },
+                        ]}
+                    />
 
-                    <button 
-                        className="btn btn-sm btn-square btn-ghost border-base-300"
+                    <Button
+                        size="small"
+                        icon={sortDir === 'asc' ? <SortAscendingOutlined /> : <SortDescendingOutlined />}
                         onClick={toggleSortDir}
                         title={sortDir === 'asc' ? "Ascending" : "Descending"}
-                    >
-                        {sortDir === 'asc' ? "Asc" : "Desc"}
-                    </button>
+                    />
 
-                    <LoadingButton 
-                        label="Refresh" 
-                        isLoading={isLoading} 
-                        onClick={onRefresh} 
+                    <LoadingButton
+                        label="Refresh"
+                        isLoading={isLoading}
+                        onClick={onRefresh}
                         className="btn-sm"
                     />
-                </div>
+                </Space>
             </div>
 
             {children({ notes: filteredNotes })}

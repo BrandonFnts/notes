@@ -1,32 +1,27 @@
-import { NoteListItem } from "./NoteListItem";
+import { Typography } from "antd";
+import { CrudTable } from "@/components";
 
-export const NoteList = ({ data, onClick, onDelete }) => {
+const columns = [
+    { field: 'title', title: 'Title', type: 'bold' },
+    { field: 'content', title: 'Content', type: 'secondary', ellipsis: true },
+    { field: 'tags', title: 'Tags', type: 'tags' },
+    { field: 'color', title: 'Color', type: 'color' },
+    { field: 'createdAt', title: 'Date', type: 'date' },
+];
+
+export const NoteList = ({ data, onDelete, onEdit, onView }) => {
     if (!data || data.length === 0) {
-        return <div className="text-center p-4 text-gray-500">There are no notes available.</div>;
+        return <Typography.Text type="secondary" style={{ display: "block", textAlign: "center", padding: 16 }}>There are no notes available.</Typography.Text>;
     }
 
     return (
-        <div className="overflow-x-auto">
-            <table className="table table-zebra">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Content</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((item) => (
-                        <NoteListItem 
-                            key={item.id} 
-                            item={item}
-                            onClick={onClick}
-                            onDelete={onDelete}
-                        />
-                    ))}
-                </tbody>
-            </table>
-        </div>
+        <CrudTable
+            columns={columns}
+            dataSource={data}
+            actionConfig={{ delete: true, edit: true, view: true }}
+            onDelete={(record) => onDelete(record.id)}
+            onEdit={(record) => onEdit(record)}
+            onView={(record) => onView(record)}
+        />
     );
 };

@@ -1,22 +1,31 @@
-export const Input = ({ label, value, onChange, placeholder, type = "text", error, className = "" }) => {
+import { Input as AntInput, Typography } from "antd";
+
+export const Input = ({ label, value, onChange, placeholder, type = "text", error, className = "", ...rest }) => {
     return (
-        <div className={`form-control ${className}`}>
+        <div className={className}>
             {label && (
-                <label className="label">
-                    <span className="label-text font-semibold">{label}</span>
-                </label>
+                <label style={{ display: "block", marginBottom: 4, fontWeight: 600 }}>{label}</label>
             )}
-            <input
-                type={type}
-                className={`input input-bordered w-full ${error ? "input-error" : ""}`}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-            />
+            {type === "password" ? (
+                <AntInput.Password
+                    value={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    status={error ? "error" : undefined}
+                    {...rest}
+                />
+            ) : (
+                <AntInput
+                    type={type}
+                    value={value}
+                    onChange={onChange}
+                    placeholder={placeholder}
+                    status={error ? "error" : undefined}
+                    {...rest}
+                />
+            )}
             {error && (
-                <label className="label">
-                    <span className="label-text-alt text-error">{error}</span>
-                </label>
+                <Typography.Text type="danger" style={{ fontSize: 12 }}>{error}</Typography.Text>
             )}
         </div>
     );

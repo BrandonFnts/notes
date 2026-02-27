@@ -6,15 +6,13 @@ import { services } from "@/services";
 export const NoteFormController = ({ noteId, onCancel }) => {
     const monitors = useMonitor(["createNote", "updateNote", "getTags", "getNoteById"]);
     const tags = useQuery({ collection: "tags" });
-    const activeNoteData = useQuery({ collection: "activeNote" });
+    const activeNoteData = useQuery({ collection: "activeNote", where: [{ field: "id", op: "==", value: noteId }] });
 
     useEffect(() => {
         services.tags.getTags();
     }, []);
 
     useEffect(() => {
-        localStorage.removeItem("activeNote");
-        window.dispatchEvent(new Event("storage"));
         if (noteId) {
             services.notes.getNoteById(noteId);
         }

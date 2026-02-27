@@ -1,13 +1,16 @@
 import { Outlet } from 'react-router-dom';
+import { Layout as AntLayout } from 'antd';
 import { Navbar } from './Navbar';
+
+const { Content } = AntLayout;
 
 export const Layout = () => {
   return (
-    <div className="min-h-screen bg-base-200 flex flex-col">
+    <AntLayout style={{ minHeight: "100vh" }}>
       <Navbar />
-      <main className="container mx-auto px-4 flex-grow">
+      <Content style={{ padding: "0 24px" }}>
         <Outlet />
-      </main>
-    </div>
+      </Content>
+    </AntLayout>
   );
 };

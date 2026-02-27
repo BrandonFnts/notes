@@ -1,22 +1,20 @@
+import { Input, Typography } from "antd";
+
 export const TextArea = ({ label, value, onChange, placeholder, rows = 3, error, className = "" }) => {
     return (
-        <div className={`form-control ${className}`}>
+        <div className={className}>
             {label && (
-                <label className="label">
-                    <span className="label-text font-semibold">{label}</span>
-                </label>
+                <label style={{ display: "block", marginBottom: 4, fontWeight: 600 }}>{label}</label>
             )}
-            <textarea
-                className={`textarea textarea-bordered h-24 ${error ? "textarea-error" : ""}`}
+            <Input.TextArea
                 value={value}
                 onChange={onChange}
-                rows={rows}
                 placeholder={placeholder}
-            ></textarea>
+                rows={rows}
+                status={error ? "error" : undefined}
+            />
             {error && (
-                <label className="label">
-                    <span className="label-text-alt text-error">{error}</span>
-                </label>
+                <Typography.Text type="danger" style={{ fontSize: 12 }}>{error}</Typography.Text>
             )}
         </div>
     );

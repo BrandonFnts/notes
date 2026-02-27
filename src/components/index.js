@@ -4,6 +4,7 @@ export * from './ui/TextArea';
 export * from './ui/ColorPicker';
 export * from './ui/ChipSelector';
 export * from './ui/GhostRedButton';
+export * from './ui/CrudTable';
 
 export * from './auth/ProtectedRoute';
 

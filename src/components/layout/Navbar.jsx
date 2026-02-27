@@ -1,20 +1,35 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { Layout, Menu, Button } from 'antd';
 import { useAuth } from '@/context/AuthContext';
-import { GhostRedButton } from '../ui/GhostRedButton';
+
+const { Header } = Layout;
 
 export const Navbar = () => {
   const { logout } = useAuth();
+  const location = useLocation();
+
+  const menuItems = [
+    {
+      key: '/notes',
+      label: <Link to="/notes">Notes</Link>,
+    },
+  ];
+
   return (
-    <div className="navbar bg-base-100 shadow-md mb-4">
-      <div className="flex-1">
-        <Link to="/" className="btn btn-ghost normal-case text-xl">My Notes App</Link>
-      </div>
-      <div className="flex-none">
-        <ul className="menu menu-horizontal px-1">
-          <li><Link to="/notes">Notes</Link></li>
-        </ul>
-        <GhostRedButton onClick={logout}>Logout</GhostRedButton>
-      </div>
-    </div>
+    <Header style={{ display: 'flex', alignItems: 'center', marginBottom: 16, padding: '0 24px' }}>
+      <Link to="/" style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', marginRight: 24, whiteSpace: 'nowrap' }}>
+        My Notes App
+      </Link>
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        selectedKeys={[location.pathname]}
+        items={menuItems}
+        style={{ flex: 1, minWidth: 0 }}
+      />
+      <Button type="text" danger onClick={logout} style={{ color: '#ff4d4f' }}>
+        Logout
+      </Button>
+    </Header>
   );
 };

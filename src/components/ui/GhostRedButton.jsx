@@ -1,11 +1,16 @@
+import { Button } from "antd";
+
 export const GhostRedButton = ({ onClick, children, className = "", type = "button" }) => {
     return (
-        <button
+        <Button
+            type="text"
+            danger
+            size="small"
             onClick={onClick}
-            className={`btn btn-xs btn-ghost text-error ${className}`}
-            type={type}
+            htmlType={type}
+            className={className}
         >
             {children}
-        </button>
+        </Button>
     );
 };

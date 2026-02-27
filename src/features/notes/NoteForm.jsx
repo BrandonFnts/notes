@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Button, Typography } from "antd";
 import { LoadingButton, Input, TextArea, ColorPicker, ChipSelector, GhostRedButton } from "@/components";
 
 const colorOptions = [
@@ -64,9 +65,9 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex justify-between items-center">
-                <h3 className="text-sm font-semibold opacity-70">
+                <Typography.Text type="secondary" strong style={{ fontSize: 13 }}>
                     {initialData ? `Editing: ${initialData.title}` : "New Note"}
-                </h3>
+                </Typography.Text>
                 {initialData && onCancel && (
                     <GhostRedButton onClick={handleCancel}>
                         Cancel
@@ -79,7 +80,6 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, 
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter note title..."
-                className="w-full"
             />
 
             <TextArea
@@ -105,12 +105,12 @@ export const NoteForm = ({ tags, tagsLoading, onSubmit, isLoading, initialData, 
                 isLoading={tagsLoading}
             />
 
-            <div className="mt-2 text-right">
+            <div style={{ marginTop: 8, textAlign: "right" }}>
                 <LoadingButton
                     label={initialData ? "Update Note" : "Create Note"}
                     isLoading={isLoading}
                     type="submit"
-                    className={`max-w-xs ${initialData ? "btn-warning" : "btn-primary"}`}
+                    className={initialData ? "btn-warning" : "btn-primary"}
                 />
             </div>
         </form>
