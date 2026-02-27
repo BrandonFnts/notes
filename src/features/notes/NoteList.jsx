@@ -10,10 +10,6 @@ const columns = [
 ];
 
 export const NoteList = ({ data, onDelete, onEdit, onView }) => {
-    if (!data || data.length === 0) {
-        return <Typography.Text type="secondary" style={{ display: "block", textAlign: "center", padding: 16 }}>There are no notes available.</Typography.Text>;
-    }
-
     return (
         <CrudTable
             columns={columns}

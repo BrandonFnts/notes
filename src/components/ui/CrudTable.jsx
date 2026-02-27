@@ -137,15 +137,21 @@ export const CrudTable = ({
   }, [actionConfig, columns, onDelete, onEdit, onView]);
 
   return (
-    <Table
-      columns={finalColumns}
-      dataSource={dataSource}
-      rowKey={rowKey}
+    <div>
+      {dataSource.length === 0 ? (
+        <Typography.Text type="secondary" style={{ display: "block", textAlign: "center", padding: 16 }}>There are no notes available.</Typography.Text>
+      ) : (
+        <Table
+          columns={finalColumns}
+          dataSource={dataSource}
+          rowKey={rowKey}
       loading={loading}
       pagination={false}
       scroll={{ x: 'max-content' }}
       size="middle"
       {...restProps}
     />
+      )}
+    </div>
   );
 };
