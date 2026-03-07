@@ -61,16 +61,25 @@ const buildColumn = ({ field, title, type = 'text', render, ...rest }) => ({
  * @param {Array}    props.dataSource   - Row data (from useQuery in the parent).
  * @param {boolean}  props.loading      - Loading state (from useMonitor in the parent).
  * @param {Object}   [props.actionConfig] - { view, edit, delete } toggles for the actions column.
+ * @param {Object|false} [props.pagination] - Ant Design pagination config, or false to disable.
  * @param {Function} [props.onView]     - Callback when clicking View.
  * @param {Function} [props.onEdit]     - Callback when clicking Edit.
  * @param {Function} [props.onDelete]   - Callback when clicking Delete (after confirm).
  * @param {string}   [props.rowKey]     - Unique row key field (default: 'id').
  */
+const defaultPagination = {
+  pageSize: 10,
+  showSizeChanger: true,
+  pageSizeOptions: ['10', '20', '50'],
+  showTotal: (total, range) => `${range[0]}-${range[1]} of ${total}`,
+};
+
 export const CrudTable = ({
   columns,
   dataSource,
   loading = false,
   actionConfig,
+  pagination,
   onView,
   onEdit,
   onDelete,
@@ -145,12 +154,12 @@ export const CrudTable = ({
           columns={finalColumns}
           dataSource={dataSource}
           rowKey={rowKey}
-      loading={loading}
-      pagination={false}
-      scroll={{ x: 'max-content' }}
-      size="middle"
-      {...restProps}
-    />
+          loading={loading}
+          pagination={pagination === false ? false : { ...defaultPagination, ...pagination }}
+          scroll={{ x: 'max-content' }}
+          size="middle"
+          {...restProps}
+        />
       )}
     </div>
   );

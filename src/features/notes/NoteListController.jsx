@@ -1,19 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card } from "antd";
 import { NoteList } from "./NoteList";
 import { NoteFormController } from "./NoteFormController";
 import { NotesLoader } from "./NotesLoader";
-import { useMonitor } from "@/hooks";
-import { services } from "@/services";
+import { withReactive } from "@/reactive";
 
-export const NoteListController = () => {
-  const monitors = useMonitor(["getNotes", "deleteNote"]);
+const NoteListControllerView = ({ monitors, services }) => {
   const [editingNote, setEditingNote] = useState(null);
-
-  useEffect(() => {
-    services.notes.getNotes();
-  }, []);
-
   const isLoading = monitors.getNotes || monitors.deleteNote;
 
   const handleSelectNote = (note) => {
@@ -66,3 +59,11 @@ export const NoteListController = () => {
     </div>
   );
 };
+
+export const NoteListController = withReactive(NoteListControllerView, {
+  monitors: ["getNotes", "deleteNote"],
+
+  init: ({ services }) => {
+    services.notes.getNotes();
+  },
+});

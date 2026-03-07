@@ -1,14 +1,14 @@
 import { RegisterForm } from './RegisterForm';
-import { useMonitor } from '@/hooks';
-import { services } from '@/services';
+import { withReactive } from '@/reactive';
 
-export const RegisterController = () => {
-    const monitors = useMonitor(["register"]);
-    const isLoading = monitors.register;
-
+const RegisterControllerView = ({ monitors, services }) => {
     const handleRegister = (credentials) => {
         services.auth.register(credentials.email, credentials.password);
     };
 
-    return <RegisterForm onSubmit={handleRegister} isLoading={isLoading} />;
+    return <RegisterForm onSubmit={handleRegister} isLoading={monitors.register} />;
 };
+
+export const RegisterController = withReactive(RegisterControllerView, {
+    monitors: ["register"],
+});

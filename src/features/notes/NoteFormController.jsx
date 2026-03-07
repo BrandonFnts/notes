@@ -1,17 +1,8 @@
 import { useEffect } from "react";
 import { NoteForm } from "./NoteForm";
-import { useMonitor, useQuery } from "@/hooks";
-import { services } from "@/services";
+import { withReactive } from "@/reactive";
 
-export const NoteFormController = ({ noteId, onCancel }) => {
-    const monitors = useMonitor(["createNote", "updateNote", "getTags", "getNoteById"]);
-    const tags = useQuery({ collection: "tags" });
-    const activeNoteData = useQuery({ collection: "activeNote", where: [{ field: "id", op: "==", value: noteId }] });
-
-    useEffect(() => {
-        services.tags.getTags();
-    }, []);
-
+const NoteFormControllerView = ({ monitors, services, tags, activeNote, noteId, onCancel }) => {
     useEffect(() => {
         if (noteId) {
             services.notes.getNoteById(noteId);
@@ -19,17 +10,15 @@ export const NoteFormController = ({ noteId, onCancel }) => {
     }, [noteId]);
 
     const isSaving = monitors.createNote || monitors.updateNote;
+    const initialData = noteId ? (activeNote?.[0] || null) : null;
 
     const handleFormSubmit = (formData) => {
         if (noteId) {
-            services.notes.updateNote(noteId, formData)
+            services.notes.updateNote(noteId, formData);
         } else {
-            services.notes.createNote(formData)
+            services.notes.createNote(formData);
         }
     };
-
-    const activeNote = activeNoteData?.[0] || null;
-    const initialData = noteId ? activeNote : null;
 
     return (
         <NoteForm
@@ -42,3 +31,16 @@ export const NoteFormController = ({ noteId, onCancel }) => {
         />
     );
 };
+
+export const NoteFormController = withReactive(NoteFormControllerView, {
+    monitors: ["createNote", "updateNote", "getTags", "getNoteById"],
+
+    queries: (props) => ({
+        tags: { collection: "tags" },
+        activeNote: { collection: "activeNote", where: [{ field: "id", op: "==", value: props.noteId }] },
+    }),
+
+    init: ({ services }) => {
+        services.tags.getTags();
+    },
+});
